@@ -10,6 +10,7 @@ import errorHandler from "@/common/middleware/errorHandler";
 import rateLimiter from "@/common/middleware/rateLimiter";
 import requestLogger from "@/common/middleware/requestLogger";
 import { env } from "@/common/utils/envConfig";
+import mongoose from "mongoose";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -26,6 +27,17 @@ app.use(rateLimiter);
 
 // Request logging
 app.use(requestLogger);
+
+// database
+const mongoURI = "mongodb://localhost:27017/liramedika";
+mongoose
+  .connect(mongoURI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
 // Routes
 app.use("/health-check", healthCheckRouter);
